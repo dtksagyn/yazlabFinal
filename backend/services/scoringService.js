@@ -1,14 +1,6 @@
-// Position-based requirements
-const positionRequirements = {
-  "Dr. Öğr. Üyesi": {
-    A: { min: 45 }, // A1-A4 minimum
-    B: { min: 10 },
-    // Other category requirements
-  },
-  // Other positions...
-};
+// services/scoringService.js
+const positionRequirements = require("../utils/positionRequirements");
 
-// In scoring service:
 function checkPositionRequirements(application) {
   const requirements = positionRequirements[application.position];
   if (!requirements) return true;
