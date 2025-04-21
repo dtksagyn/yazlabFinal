@@ -9,10 +9,10 @@ const categorySchema = new mongoose.Schema({
   requiresMin: { type: Boolean, default: false },
   items: [
     {
-      code: String,
-      description: String,
-      basePoints: Number,
-      appliesKCoefficient: Boolean,
+      code: { type: String, required: true }, // A1, A2, B1, etc.
+      description: { type: String, required: true },
+      basePoints: { type: Number, required: true },
+      appliesKCoefficient: { type: Boolean, default: false }, // Whether K coefficient applies
     },
   ],
 });

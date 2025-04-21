@@ -25,7 +25,7 @@ const applicationSchema = new mongoose.Schema(
     juryEvaluations: [
       {
         jury: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        evaluation: Object,
+        evaluationFile: String, // File path to the uploaded PDF
         submittedAt: Date,
       },
     ],
