@@ -71,6 +71,21 @@ const userSchema = new mongoose.Schema(
       minlength: [8, "Password must be at least 8 characters"],
       select: false,
     },
+    education: [
+      {
+        degree: String,
+        institution: String,
+        year: Number,
+      },
+    ],
+    cv: {
+      type: String, // store file path or URL
+      required: false,
+    },
+    profilePicture: {
+      type: String, // store file path or URL
+      required: false,
+    },
     role: {
       type: String,
       enum: ["applicant", "jury", "manager", "admin"],
@@ -91,10 +106,11 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Indexes
+/*
+// Indexes for faster queries
 userSchema.index({ email: 1 });
 userSchema.index({ tcNo: 1 });
-
+*/
 // Password hashing middleware
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
