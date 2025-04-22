@@ -28,8 +28,19 @@ const announcementSchema = new mongoose.Schema(
     deadline: { type: Date, required: true },
     isActive: { type: Boolean, default: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    juryMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    juryEvaluations: [
+      {
+        juryId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        result: { type: String, enum: ["pass", "fail"], required: true },
+        feedbackFile: { type: String }, // file path to uploaded PDF
+        submittedAt: { type: Date, default: Date.now },
+      },
+    ],
+    finalDecisionFile: { type: String }, // path to Nihai Karar PDF
+    finalizedAt: { type: Date },
   },
-  { timestamps: true }
+  { timestamps: true } // Ensure timestamps are properly placed
 );
 
 module.exports = mongoose.model("Announcement", announcementSchema);
