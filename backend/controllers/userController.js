@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError"); // Adjust the path if needed
 
 // 1) Get logged-in user's profile
 exports.getMe = catchAsync(async (req, res, next) => {

@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 function Registration() {
   const [formData, setFormData] = useState({
     idNumber: "",
-    fullName: "",
-    email: "",
+    firstName: "",
+    lastName: "",
     birthDate: "",
     phoneNumber: "",
     password: "",
@@ -35,10 +35,8 @@ function Registration() {
     const newErrors = {};
 
     if (!formData.idNumber) newErrors.idNumber = "ID Number is required";
-    if (!formData.fullName) newErrors.fullName = "Full Name is required";
-    if (!formData.email) newErrors.email = "Email is required";
-    else if (!/^\S+@\S+\.\S+$/.test(formData.email))
-      newErrors.email = "Email is invalid";
+    if (!formData.firstName) newErrors.firstName = "First Name is required";
+    if (!formData.lastName) newErrors.lastName = "Last Name is required";
     if (!formData.birthDate) newErrors.birthDate = "Date of Birth is required";
     if (!formData.phoneNumber)
       newErrors.phoneNumber = "Phone Number is required";
@@ -77,27 +75,32 @@ function Registration() {
         throw new Error(verification.message || "ID verification failed");
       }
 
-      // --- BACKEND CODE (COMMENTED OUT UNTIL CONNECTED) ---
-      /*
-      const response = await fetch("/api/register", {
+      // --- FIXED BACKEND REQUEST ---
+      const response = await fetch("http://localhost:8000/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          tcNo: formData.idNumber,
+          name: formData.firstName,
+          surname: formData.lastName,
+          birthYear: new Date(formData.birthDate).getFullYear(),
+          phoneNumber: formData.phoneNumber,
+          password: formData.password,
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Registration failed");
       }
-      */
 
-      // Mocking successful registration response
+      // Redirect after success
       navigate("/login", {
         state: {
           message: "Registration successful! Please log in.",
-          registeredEmail: formData.email,
+          idNumber: formData.idNumber,
         },
       });
     } catch (error) {
@@ -142,35 +145,37 @@ function Registration() {
               </div>
             </div>
 
-            {/* Full Name */}
+            {/* First Name */}
             <div className="mb-3">
-              <label className="form-label">Full Name</label>
+              <label className="form-label">First Name</label>
               <input
-                name="fullName"
+                name="firstName"
                 type="text"
                 className={`form-control ${
-                  errors.fullName ? "is-invalid" : ""
+                  errors.firstName ? "is-invalid" : ""
                 }`}
-                value={formData.fullName}
+                value={formData.firstName}
                 onChange={handleChange}
               />
-              {errors.fullName && (
-                <div className="invalid-feedback">{errors.fullName}</div>
+              {errors.firstName && (
+                <div className="invalid-feedback">{errors.firstName}</div>
               )}
             </div>
 
-            {/* Email */}
+            {/* Last Name */}
             <div className="mb-3">
-              <label className="form-label">Email address</label>
+              <label className="form-label">Last Name</label>
               <input
-                name="email"
-                type="email"
-                className={`form-control ${errors.email ? "is-invalid" : ""}`}
-                value={formData.email}
+                name="lastName"
+                type="text"
+                className={`form-control ${
+                  errors.lastName ? "is-invalid" : ""
+                }`}
+                value={formData.lastName}
                 onChange={handleChange}
               />
-              {errors.email && (
-                <div className="invalid-feedback">{errors.email}</div>
+              {errors.lastName && (
+                <div className="invalid-feedback">{errors.lastName}</div>
               )}
             </div>
 

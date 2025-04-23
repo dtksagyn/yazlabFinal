@@ -48,22 +48,22 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
-      unique: true,
-      lowercase: true,
-      validate: [validator.isEmail, "Please provide a valid email"],
+      required: false,
+      unique: false,
+      default: null,
     },
+
     phoneNumber: {
       type: String,
       required: [true, "Phone number is required"],
-      validate: {
+      /*validate: {
         validator: function (v) {
           const phoneNumber = parsePhoneNumberFromString(v);
           return phoneNumber ? phoneNumber.isValid() : false;
         },
         message: (props) =>
           `${props.value} is not a valid international phone number!`,
-      },
+      },*/
     },
     password: {
       type: String,
