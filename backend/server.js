@@ -26,10 +26,11 @@ app.use("/api/users", userRouter);
 //app.use("/api/announcements", announcementRoutes);
 //app.use("/api/jury", juryRoutes);
 
-// Error Handling Middleware
+// Global error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: "Something went wrong!" });
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Something went wrong!";
+  res.status(statusCode).json({ status: "error", message });
 });
 
 const PORT = process.env.PORT || 8000;

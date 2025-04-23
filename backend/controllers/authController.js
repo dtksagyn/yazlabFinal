@@ -2,6 +2,22 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const verifyTCKimlikNo = require("../utils/verifyTCKimlikNo");
 const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
+const bcrypt = require("bcrypt");
+
+const createSendToken = (user, statusCode, res) => {
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+
+  res.status(statusCode).json({
+    status: "success",
+    token,
+    data: {
+      user,
+    },
+  });
+};
 
 // Register with TC Kimlik verification
 exports.register = catchAsync(async (req, res, next) => {
@@ -11,28 +27,30 @@ exports.register = catchAsync(async (req, res, next) => {
   // 1) Check if user exists
   const existingUser = await User.findOne({ $or: [{ tcNo }] });
   if (existingUser) {
-    return next(new AppError("Email or TC Kimlik No already registered", 400));
+    return next(new AppError("TC Kimlik No already registered", 400));
   }
 
-  // 2) Verify TC Kimlik No
+  /* // 2) Verify TC Kimlik No
   const isTCValid = await verifyTCKimlikNo(tcNo, name, surname, birthYear);
   if (!isTCValid) {
     return next(new AppError("TC Kimlik No verification failed", 400));
-  }
+  }*/
 
-  // 3) Create new user
+  // 3) Hash password
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  // 4) Create new user
   const newUser = await User.create({
     tcNo,
     name,
     surname,
     birthYear,
-    email,
     phoneNumber,
-    password,
+    password: hashedPassword,
     role: role || "applicant",
   });
 
-  // 4) Log the user in immediately
+  // 5) Log the user in immediately
   createSendToken(newUser, 201, res);
 });
 
